@@ -1,0 +1,66 @@
+{% extends 'common/base.html' %}
+
+{% block content %}
+<!-- 검색 로직 추가 -->
+    <div class="row">
+        <div class="col">
+            <form method = 'GET'>
+                <div class="input-group">
+                    <!-- button submit 시 버튼 클릭 시 자동으로 메소드 호출 -->
+                    <input class='form-control' type="text" name="search_text">
+                    <button type='submit' class="btn btn-outline-secondary">
+                        검색
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+    
+    <div class="row">
+        <!-- bootstrap의 col-6을 활용하여 카드형식으로 게시판 생성하며, p-2를 통해 간격을 살짝 벌림. -->
+        <!-- 게시글을 받아온 후 카드 형식으로 출력 -->
+        {% for post in post_set %}
+        <div class="col-6 p-2">
+            <div class="card">
+                <!-- 게시글과 연결 -->
+                <a class="text-decoration-none" style="color:black;" href="{% url 'post_detail' post.id %}">
+                    <div class="card-body">
+                        <!-- 제목 -->
+                        <h5>{{ post.title }}</h5>
+                        <!-- 내용 -->
+                        <p>{{ post.content }}</p>
+                        <!-- 유저 닉네임 및 날짜(|를 통한 형식 지정) -->
+                        <p>{{ post.user.nickname }} <small>{{ post.reg_date|date:"Y-m-d h:m:s" }}</small></p>
+                        <!-- 전체 자식클래스를 가져올 경우 부모클래스.자식클래스.set 으로 가져올 수 있음 -->
+                        <p><span class="material-symbols-outlined" style="font-size:14px">
+                            chat_bubble
+                            </span>
+                            {{post.comment_set.all.count}}</p>
+                    </div>
+                </a>
+            </div>
+        </div>
+        {% endfor  %}
+    </div>
+    <!-- 이전 페이지, 해당 페이지 번호, 다음 페이지 추가 -->
+    <div class="row">
+        <div class="col-4 text-start">
+            <!-- 만약 이전 페이지 번호가 존재할 경우 -->
+            {% if post_set.has_previous %}
+            <!-- href 태그를 통하여 페이지번호와 검색어를 같이 파라미터로 넘김 -->
+            <a class="text-decoration-none fs-5" style="font-weight: bold;color:black" href="{% url 'board' %}?page={{post_set.previous_page_number}}&search_text={{ search_text }}">이전 글</a>
+            {% endif %}
+        </div>
+        <div class="col-4 text-center">
+            <!--현재 페이지번호 / 전체 페이저 번호 출력-->
+            <a>{{post_set.number}}/{{post_set.paginator.num_pages}}</a>
+        </div>
+        <div class="col-4 text-end">
+            <!-- 다음 페이지가 존재할 경우 -->
+            <!-- href 태그를 통하여 페이지번호와 검색어를 같이 파라미터로 넘김 -->
+            {% if post_set.has_next %}
+            <a class="text-decoration-none fs-5" style="font-weight: bold;color:black" href="{% url 'board' %}?page={{post_set.next_page_number}}&search_text={{ search_text }}">다음글</a>
+            {% endif %}
+        </div>
+    </div>
+{% endblock %}

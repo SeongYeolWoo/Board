@@ -1,0 +1,76 @@
+{% extends 'common/base.html' %}
+{% block content %}
+<div class ='card'>
+    <div class="card-body">
+        <div class="row">
+            <div class="col">
+                <!-- 게시글 출력. -->
+                <p class="card-title" style="font-weight:bold">{{post.title}}</p>
+                <p class="card-subtitle" style="font-size:12px">{{post.user.nickname}} <small>{{post.reg_date}}</small></p>
+                <p class="card-text" style="margin-top:10px">{{post.content}}</p>
+                <!-- 이미지가 있을 경우 같이 출력함. -->
+                {% if post.img_url %}
+                <!-- 이미지 소스가 기존 파일의 경로를 알 수 없음.  -->
+                    <img src='/upload/{{ post.img_url }}' style="max-width: 600;">
+                {% endif %}
+            </div>
+        </div>
+        <!-- 댓글 입력창 -->
+        <div class="row text-end" style="margin-top:40px">
+            <div class="col">
+                <div class="card">
+                    <div class="card-body">
+                        <!-- form태그로 댓글 전달 -->
+                        <form method="post" id="comment_form">
+                            {% csrf_token %}
+                            <!-- 댓글 작성 폼 -->
+                            <!-- 설명문구 추가 및 리사이즈 금지 -->
+                            <textarea placeholder="한 번 작성한 글은 삭제할 수 없습니다." style='resize:none;height:100px' id="content" name='content' class="form-control"></textarea>
+                            <a class="text-decoration-none fs-5 text-end my-2" id='write_btn' 
+                            style="font-weight: bold;color:grey" >댓글 작성</a>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <!-- 댓글 갯수만큼 카드 형식으로 출력함. -->
+        {% for comment in post.comment_set.all %}
+        <div class="row my-2">
+            <div class="cols">
+                <div class="card">
+                    <div class="card-body">
+                        <p>{{comment.reg_date | date:'Y-m-d h:i'}}</p>
+                        <p>{{comment.content}}</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+</div>
+<script>
+    let content = document.getElementById('content')
+    let comment_form = document.getElementById('comment_form')
+    let write_btn = document.getElementById('write_btn')
+
+    // 만약 댓글의 콘텐츠가 있을 경우 전달
+    write_btn.addEventListener('click', () => {
+        if (content.value){
+             comment_form.submit()
+        }
+    })
+    
+    // 댓글입력이 있을 경우에 버튼을 검은글씨, 커서를 포인터로 변경
+    // 없을 경우에는 회색글씨, 기본 마우스로 
+    content.addEventListener("keyup", () => {
+        if (content.value){
+            write_btn.style.color = 'black'
+            write_btn.style.cursor = 'pointer'
+        }
+        else{
+            write_btn.style.color = 'grey'
+            write_btn.style.cursor = 'default'
+        }
+    })
+</script>
+{% endblock %}

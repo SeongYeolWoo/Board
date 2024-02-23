@@ -1,0 +1,43 @@
+{% extends 'common/base.html' %}
+
+{% block content %}
+<!-- 카드형테로 만듬 -->
+<div class="card">
+    <div class="card-body text-end">
+        <!-- 파일도 함께 넘기기 때문에 post메소드 사용 -->
+        <form method="post" enctype="multipart/form-data" id="write_form">
+            {% csrf_token %}
+            <!-- my-2를 통하여 y축 마진을 2주며, placeholder로 어떤 값인지에 대한 설명 작성 -->
+            <input class='form-control my-2'type="text" id="title" name="title" placeholder="제목">
+            <!-- 높이를 150px로 고정해주고, resize가 되지 않도록함. -->
+            <textarea 
+            id = 'content'
+            style="height: 150px; resize: none;"
+            class='form-control my-2' 
+            name="content" 
+            placeholder="한번 작성한 글은 삭제할 수 없습니다. 매너를 지켜주세요"></textarea>
+            
+            <!-- 앞서 이미지파일을 받을 수 있도록 추가하였으므로, accept를 통해 입력 형식을 지정해줌. -->
+            <input class='form-control' id='image' type ="file" name="image" accept="image/*">
+            <a class="text-decoration-none fs-5 text-end my-2" id='write_btn' style="font-weight: bold;color:black" >글 작성</a>
+        </form>
+    </div>
+</div>
+
+<script>
+    let title = document.getElementById('title')
+    let content = document.getElementById('content')
+    let write_btn = document.getElementById('write_btn')
+    let write_form = document.getElementById('write_form')
+    // 제목과 내용에 컨텐츠가 없을 경우 알림창 출력
+    write_btn.addEventListener('click', ()=>{
+        if (title.value === "" || content.value ===""){
+            alert("내용을 작성해주세요");
+        }
+        else{
+            write_form.submit();
+        }
+    })
+
+</script>
+{% endblock %}

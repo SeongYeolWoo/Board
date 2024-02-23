@@ -1,0 +1,16 @@
+<div class="row text-center border-bottom align-items-center" style="width:100%;margin:0;">
+    <div class="col">
+        <a class="text-decoration-none fs-1" style="font-weight: bold;color:999999" href="{% url 'board' %}" >Anonymous Board</a>
+    </div>
+    <div class="col">
+        <!-- 만약 유저가 로그인이 되어있을 경우에는 글쓰기, 로그아웃만 나오도록하며, href 값을 통해서 signout으로 연결 -->
+        {% if request.user.is_authenticated %}
+        <p class="m-0">{{ request.user.nickname }}</p> 
+        <a class="text-decoration-none fs-5" style="font-weight: bold;color:#C60000" href="{% url 'post_write' %}">글쓰기</a>
+        <a class="text-decoration-none fs-5" style="font-weight: bold;color:black" href="{% url 'signout' %}">로그아웃</a>
+        {% else %}
+        <!-- 만약 유저가 로그인이 안되어있을 경우 로그인만 나오도록하며 href 값을 통해서 signin으로 연결 -->
+        <a class="text-decoration-none fs-5" style="font-weight: bold;color:black" href="{% url 'signin' %}" >로그인</a>
+        {% endif %}
+    </div>
+</div>
